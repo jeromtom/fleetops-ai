@@ -1,0 +1,13 @@
+{
+  "name": "fleetops-ai-cloudflare-proxy",
+  "private": true,
+  "scripts": {
+    "check": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "wrangler": "^4.127.1"
+  }
+}

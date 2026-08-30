@@ -1,4 +1,6 @@
 node_modules/
+.wrangler/
+worker-configuration.d.ts
 .next/
 out/
 build/
@@ -15,6 +17,7 @@ gcp-sa.json
 
 # OS
 .DS_Store
+._*
 
 # Editor
 .vscode/

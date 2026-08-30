@@ -1,8 +1,11 @@
 # FleetOps AI — Submission Status
 
-**Last verified:** 2026-08-30 19:39 UTC  
-**Hard deadline:** 2026-09-01 00:00 UTC (2026-09-01 05:30 IST)  
-**Time remaining at this checkpoint:** approximately 28 hours 21 minutes  
+**Last verified:** 2026-08-30 19:57 UTC
+
+**Hard deadline:** 2026-09-01 00:00 UTC (2026-09-01 05:30 IST)
+
+**Time remaining at this checkpoint:** approximately 28 hours 3 minutes
+
 **Submission state:** artifacts ready; YouTube upload, Devpost draft, and final human submission remain
 
 ## Completed and verified
@@ -12,7 +15,11 @@
   - Default branch: `main`
   - README: GitHub Mermaid render container verified; the rendered architecture is visible in the demo
   - `LICENSE` and `SETUP.md`: present
-- Google Cloud Run: <https://fleetops-ai-nbklww7gqa-uc.a.run.app>
+- Primary live demo: <https://fleetops.rexindynamics.com>
+  - HTTPS: valid Cloudflare-managed certificate
+  - Edge: `fleetops-ai-proxy` Worker, exact hostname route over the existing Rexin wildcard portal route
+  - Source and reproducible deployment config: `cloudflare-proxy/`
+- Google Cloud Run origin: <https://fleetops-ai-nbklww7gqa-uc.a.run.app>
   - Project: `saptaveda-agent`
   - Region: `us-central1`
   - Service: `fleetops-ai`
@@ -59,7 +66,8 @@ and compliance auditing with human-approved remediation.
 
 Track: The Fortified Enterprise Fleet — All Things Agentic Hackathon
 Repository: https://github.com/jeromtom/fleetops-ai
-Live Cloud Run app: https://fleetops-ai-nbklww7gqa-uc.a.run.app
+Live app: https://fleetops.rexindynamics.com
+Cloud Run origin: https://fleetops-ai-nbklww7gqa-uc.a.run.app
 
 This continuous demo shows live Google Cloud deployment proof, a full 17-resource
 scan, nine findings, one approved dry-run remediation, one denied remediation with
@@ -99,6 +107,6 @@ Review every saved field, verify the video and repository links, personally acce
 - [ ] Devpost draft contains the repository and video URLs
 - [ ] Track is The Fortified Enterprise Fleet
 - [ ] Long description and built-with tags are populated
-- [ ] Cloud Run endpoint still responds
+- [ ] `fleetops.rexindynamics.com` and the direct Cloud Run origin still respond
 - [ ] Human has reviewed the authorship attestation and clicked Submit
 - [ ] Devpost confirmation page is visible before 2026-09-01 00:00 UTC

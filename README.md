@@ -50,6 +50,10 @@ npm test    # 30 tests across scanner / policy / remediation / fleet — all pas
 
 ## Deploy to Google Cloud Run
 
+**Live demo:** <https://fleetops.rexindynamics.com>
+
+**Cloud Run origin:** <https://fleetops-ai-nbklww7gqa-uc.a.run.app>
+
 ```bash
 ./deploy.sh YOUR_GCP_PROJECT_ID          # builds the Dockerfile, deploys, prints the service URL
 ```
@@ -63,6 +67,11 @@ docker run -p 8080:8080 fleetops-ai      # → http://localhost:8080
 
 Live mode (real Gemini + real Cloud Asset Inventory scan) and all environment
 variables are documented in [`SETUP.md`](./SETUP.md).
+
+The branded endpoint is a minimal streaming Cloudflare Worker proxy. Its source,
+configuration, and verification commands are in
+[`cloudflare-proxy/`](./cloudflare-proxy/); the application and remediation
+safety controls remain on Cloud Run.
 
 ## Hackathon submission checklist
 

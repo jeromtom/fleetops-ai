@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "fleetops-ai-proxy",
+  "account_id": "9f7e4d46cbee40a399480ecd03246d9e",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "fleetops.rexindynamics.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "fleetops.rexindynamics.com/*",
+      "zone_name": "rexindynamics.com"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  }
+}

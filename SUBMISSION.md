@@ -28,7 +28,7 @@ numbered step with the exact text to paste.
 | 8 | Video shot list | ✅ Done — `DEMO_SCRIPT.md` (3:30 script, timestamped), **reality-checked against the running UI 2026-08-21**: every button label, log line, and on-screen number now matches what the app actually renders |
 | 9 | **Devpost registration** | ⬜ **Needs you** — captcha + email OTP |
 | 10 | **Public GitHub repo** | ✅ Done — <https://github.com/jeromtom/fleetops-ai> (`main`) |
-| 11 | **Cloud Run deploy** | ✅ Done — revision `fleetops-ai-00001-7bf` is Ready and serving 100% of traffic |
+| 11 | **Public deployment** | ✅ Done — <https://fleetops.rexindynamics.com> fronts Cloud Run revision `fleetops-ai-00001-7bf`, Ready and serving 100% of traffic |
 | 12 | **Demo video recorded + on YouTube** | 🟡 File ready — `video/fleetops-demo.mp4` (3:22.567, 1080p, narrated); YouTube upload needs you |
 | 13 | **Click Submit** | ⬜ **Needs you** |
 
@@ -82,10 +82,12 @@ Deployed: https://fleetops-ai-XXXXX.a.run.app
 
 **Cloud Run URL → <https://fleetops-ai-nbklww7gqa-uc.a.run.app>**
 
+**Primary live demo URL → <https://fleetops.rexindynamics.com>**
+
 Sanity-check it before recording:
 
 ```bash
-curl -X POST https://fleetops-ai-XXXXX.a.run.app/api/scan | head -c 300
+curl -X POST https://fleetops.rexindynamics.com/api/scan | head -c 300
 # expect: 17 resources → 9 findings → 9 remediations
 ```
 
@@ -147,11 +149,16 @@ The Fortified Enterprise Fleet
 https://github.com/jeromtom/fleetops-ai
 ```
 
+**Live demo URL**
+```
+https://fleetops.rexindynamics.com
+```
+
 **Video URL** — the YouTube link from Step 4.
 
 **Built with**
 ```
-next.js, typescript, tailwind, google-adk, gemini, google-cloud-run, cloud-asset-inventory, cloud-logging
+next.js, typescript, tailwind, google-adk, gemini, google-cloud-run, cloud-asset-inventory, cloud-logging, cloudflare-workers
 ```
 
 **Long description** — copy the "Long description (paste into Devpost)" block at the
@@ -171,7 +178,7 @@ Stage 1 judging is pass/fail on these. Check every box before clicking Submit.
 - [ ] `LICENSE` present
 - [ ] Track selected: The Fortified Enterprise Fleet
 - [ ] Long description pasted
-- [ ] Cloud Run URL still responds
+- [ ] `fleetops.rexindynamics.com` and the direct Cloud Run origin still respond
 - [ ] Submitted before **Aug 31, 5:00 PM PT / Sep 1, 5:30 AM IST**
 
 Then click **Submit for judging** — and update `TRACKER.md` to `✅ SUBMITTED`.
