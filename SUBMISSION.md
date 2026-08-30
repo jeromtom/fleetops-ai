@@ -4,7 +4,7 @@
 **Track**: The Fortified Enterprise Fleet
 **Prize**: $10,000 USD cash (1st place, per track) + $1,000 GCP credits
 **Deadline**: **Aug 31, 2026 · 5:00 PM PT** = **Sep 1, 2026 · 5:30 AM IST**
-**⏰ AS OF 2026-08-30 19:20 UTC: ~28 HOURS 40 MINUTES REMAIN.** The "Aug 28 safe target" originally
+**⏰ AS OF 2026-08-30 19:39 UTC: ~28 HOURS 21 MINUTES REMAIN.** The "Aug 28 safe target" originally
 written here has already passed — there is no buffer left. Treat every step below as
 same-day work. See [`CODEX_GOAL.md`](./CODEX_GOAL.md) for the agent prompt that runs the
 automatable parts in parallel.
@@ -29,7 +29,7 @@ numbered step with the exact text to paste.
 | 9 | **Devpost registration** | ⬜ **Needs you** — captcha + email OTP |
 | 10 | **Public GitHub repo** | ✅ Done — <https://github.com/jeromtom/fleetops-ai> (`main`) |
 | 11 | **Cloud Run deploy** | ✅ Done — revision `fleetops-ai-00001-7bf` is Ready and serving 100% of traffic |
-| 12 | **Demo video recorded + on YouTube** | ⬜ **Needs you** — screen capture + voice |
+| 12 | **Demo video recorded + on YouTube** | 🟡 File ready — `video/fleetops-demo.mp4` (3:22.567, 1080p, narrated); YouTube upload needs you |
 | 13 | **Click Submit** | ⬜ **Needs you** |
 
 Items 9–13 are the ones that cannot be automated: they need a human identity, a
@@ -113,6 +113,8 @@ Hard rules:
   An uncut 3-minute capture beats a polished reel that hides agent behavior.
 - Upload to YouTube as **Public or Unlisted** — Devpost rejects Private links.
 - 1080p+, mic audio, no background music, cursor visible.
+
+**Rendered file → `video/fleetops-demo.mp4` (3:22.567, 1920×1080, narrated)**
 
 **Record the YouTube URL here → `________________________________`**
 

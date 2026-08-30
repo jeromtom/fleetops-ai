@@ -1,0 +1,28 @@
+# FleetOps AI demo narration
+#
+# Section names map to live timestamps emitted by capture_demo.py. If TTS is
+# unavailable, read these lines at the corresponding on-screen beats.
+
+[problem]
+A mid-size company runs twenty Google Cloud projects. Every week, hidden waste piles up: a stale Cloud SQL instance bleeding forty-eight hundred dollars a month, a bucket left public overnight, an IAM binding that violates SOC 2. Manual auditing takes hours. Miss one, and the bill or the breach lands on Monday morning. FleetOps AI is the always-on autonomous compliance officer for your Google Cloud organization.
+
+[deployment]
+This is FleetOps AI deployed on Google Cloud Run. The command output is captured live: the service is Ready, all traffic is on the latest revision, and the public run-dot-app URL is responding. Three agents — Scanner, Policy, and Remediation — are ready to work.
+
+[scanner]
+ScannerAgent runs in the background — the Taskmaster pattern. It pulled seventeen resources across three projects in under two seconds. Here is the trace it produced: each project was inventoried, and the immutable snapshot was handed to the Policy agent.
+
+[policy]
+PolicyAgent evaluated every resource against our policy catalogue: SOC 2, HIPAA, GDPR, CIS, and cost thresholds. It flagged nine findings: three critical, three high, and three medium. Here, the Cloud Storage bucket acme-user-uploads is publicly readable. The agent cites HIPAA and rates it critical. It is read-only, separately scoped, and every finding is audit-logged.
+
+[remediation]
+RemediationAgent is the Collaborative Partner. It drafted the exact gcloud fix during the scan, then waited for review. I can inspect public access prevention before approving. Only after this human tap does it execute — in safe dry-run mode — and write the decision to the audit trail. Now let me deny a different remediation.
+
+[deny]
+The second critical finding is a cross-environment owner binding. The fleet refuses to record a denial without a human reason, so I enter the release-freeze context first, then deny it. That enforced reason is part of the audit trail.
+
+[summary]
+Three specialized agents, each with a scoped role. ScannerAgent is read-only over the organization. PolicyAgent reasons about compliance. RemediationAgent is the only write-scoped agent, and every write requires human approval. The four status cards now show seventeen assets, nine findings, one executed, one denied, seven pending, and twenty-two audit events.
+
+[docs]
+The complete project is public on GitHub with a rendered architecture diagram, reproducible setup, an MIT license, and thirty passing tests. FleetOps AI, submitted to All Things Agentic under the Fortified Enterprise Fleet track.
