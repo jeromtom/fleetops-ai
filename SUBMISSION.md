@@ -4,7 +4,7 @@
 **Track**: The Fortified Enterprise Fleet
 **Prize**: $10,000 USD cash (1st place, per track) + $1,000 GCP credits
 **Deadline**: **Aug 31, 2026 · 5:00 PM PT** = **Sep 1, 2026 · 5:30 AM IST**
-**⏰ AS OF 2026-08-30 18:50 UTC: ~29 HOURS REMAIN.** The "Aug 28 safe target" originally
+**⏰ AS OF 2026-08-30 19:20 UTC: ~28 HOURS 40 MINUTES REMAIN.** The "Aug 28 safe target" originally
 written here has already passed — there is no buffer left. Treat every step below as
 same-day work. See [`CODEX_GOAL.md`](./CODEX_GOAL.md) for the agent prompt that runs the
 automatable parts in parallel.
@@ -27,8 +27,8 @@ numbered step with the exact text to paste.
 | 7 | Devpost write-up copy | ✅ Done — pre-filled in §Step 5 below |
 | 8 | Video shot list | ✅ Done — `DEMO_SCRIPT.md` (3:30 script, timestamped), **reality-checked against the running UI 2026-08-21**: every button label, log line, and on-screen number now matches what the app actually renders |
 | 9 | **Devpost registration** | ⬜ **Needs you** — captcha + email OTP |
-| 10 | **Public GitHub repo** | ⬜ **Needs you** — promote to `jeromtom/fleetops-ai` |
-| 11 | **Cloud Run deploy** | ⬜ **Needs you** — needs your GCP account (`./deploy.sh` does the rest) |
+| 10 | **Public GitHub repo** | ✅ Done — <https://github.com/jeromtom/fleetops-ai> (`main`) |
+| 11 | **Cloud Run deploy** | ✅ Done — revision `fleetops-ai-00001-7bf` is Ready and serving 100% of traffic |
 | 12 | **Demo video recorded + on YouTube** | ⬜ **Needs you** — screen capture + voice |
 | 13 | **Click Submit** | ⬜ **Needs you** |
 
@@ -80,7 +80,7 @@ The script enables the required APIs, builds the `Dockerfile`, deploys, and prin
 Deployed: https://fleetops-ai-XXXXX.a.run.app
 ```
 
-**Record that URL here → `________________________________`**
+**Cloud Run URL → <https://fleetops-ai-nbklww7gqa-uc.a.run.app>**
 
 Sanity-check it before recording:
 
