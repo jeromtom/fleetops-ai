@@ -1,0 +1,5 @@
+FleetOps AI live-demo fixture.
+
+This file is intentionally public and contains no credentials, customer data,
+personal data, or production information. It exists only so the live Cloud
+Asset Inventory scan can validate public-bucket detection end to end.

@@ -1,4 +1,4 @@
-const UPSTREAM_ORIGIN = "https://fleetops-ai-nbklww7gqa-uc.a.run.app";
+const UPSTREAM_ORIGIN = "https://fleetops-ai-ywb5cstj7a-uc.a.run.app";
 
 export default {
   async fetch(request: Request): Promise<Response> {

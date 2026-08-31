@@ -139,9 +139,9 @@ function EmptyState({ onScan, busy }: { onScan: () => void; busy: boolean }) {
       </div>
       <h2 className="text-lg font-semibold text-white">No scan yet</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-        Click <em>Run new scan</em> to have ScannerAgent inventory the bundled AcmeCorp GCP org (3 projects,
-        17 resources), PolicyAgent evaluate every asset against SOC2 / HIPAA / GDPR / CIS / cost rules, and
-        RemediationAgent draft gcloud fixes for you to triage.
+        Click <em>Run new scan</em> to have ScannerAgent inventory the configured Google Cloud scope,
+        PolicyAgent evaluate supported assets against SOC2 / HIPAA / GDPR / CIS / cost rules, and
+        RemediationAgent draft approval-gated gcloud fixes for you to triage.
       </p>
       <button
         onClick={onScan}
@@ -169,7 +169,7 @@ function FleetOverview({
         color="bg-gblue"
         label="ScannerAgent · Taskmaster"
         value={state.agentStatus.scanner}
-        detail={`snap ${state.snapshot?.id ?? "—"}`}
+        detail={`${state.snapshot?.source === "cloud-asset" ? "live Cloud Asset Inventory" : "bundled snapshot"} · ${state.snapshot?.projectIds.length ?? 0} project(s)`}
       />
       <StatCard
         color="bg-gred"

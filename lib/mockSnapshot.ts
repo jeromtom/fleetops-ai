@@ -9,6 +9,7 @@ export const MOCK_SNAPSHOT: Snapshot = {
   takenAt: "2026-08-25T09:12:04.000Z",
   orgId: "organizations/123456789012",
   projectIds: ["acme-prod", "acme-staging", "acme-analytics"],
+  source: "mock",
   resources: [
     // ---- acme-prod ----
     {

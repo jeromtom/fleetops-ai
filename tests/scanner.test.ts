@@ -32,8 +32,37 @@ describe("ScannerAgent (Taskmaster track)", () => {
     expect(ScannerAgent.role).toBe("Taskmaster");
   });
 
-  it("refuses to run in live mode without wiring (FLEETOPS_MOCK=false)", async () => {
+  it("requires an explicit project allowlist in live mode", async () => {
     process.env.FLEETOPS_MOCK = "false";
-    await expect(ScannerAgent.run()).rejects.toThrow(/Live Cloud Asset Inventory/);
+    delete process.env.GCP_PROJECT_IDS;
+    delete process.env.GOOGLE_CLOUD_PROJECT;
+    await expect(ScannerAgent.run()).rejects.toThrow(/GCP_PROJECT_IDS/);
+  });
+
+  it("builds a live snapshot from the injected Cloud Asset reader", async () => {
+    process.env.FLEETOPS_MOCK = "false";
+    process.env.GCP_PROJECT_IDS = "fleetops-demo-one";
+    process.env.FLEETOPS_RESOURCE_FILTER = "fleetops-demo";
+
+    const result = await ScannerAgent.run({
+      readLiveResources: async (projectIds, filters) => {
+        expect(projectIds).toEqual(["fleetops-demo-one"]);
+        expect(filters).toEqual(["fleetops-demo"]);
+        return [
+          {
+            id: "//storage.googleapis.com/fleetops-demo-public",
+            project: "fleetops-demo-one",
+            kind: "gcs.bucket",
+            displayName: "fleetops-demo-public",
+            metadata: { iamPolicy: { bindings: [] }, cmek: null },
+          },
+        ];
+      },
+    });
+
+    expect(result.snapshot.source).toBe("cloud-asset");
+    expect(result.snapshot.projectIds).toEqual(["fleetops-demo-one"]);
+    expect(result.snapshot.resources).toHaveLength(1);
+    expect(result.logs[0].action).toContain("live Cloud Asset Inventory");
   });
 });

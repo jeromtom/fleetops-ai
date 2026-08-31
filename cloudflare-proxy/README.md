@@ -4,6 +4,9 @@ This Worker provides the branded `fleetops.rexindynamics.com` endpoint and
 streams requests and responses to the public Cloud Run deployment. The
 application and its remediation safety controls remain on Cloud Run.
 
+Current upstream: `fleetops-live-demo-2026` Cloud Run service
+`https://fleetops-ai-ywb5cstj7a-uc.a.run.app`.
+
 ## Verify
 
 ```bash

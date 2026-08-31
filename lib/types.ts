@@ -28,6 +28,7 @@ export interface Snapshot {
   orgId: string;
   projectIds: string[];
   resources: Resource[];
+  source?: "mock" | "cloud-asset";
 }
 
 export type PolicyDomain = "SOC2" | "HIPAA" | "GDPR" | "CIS" | "COST";

@@ -40,10 +40,10 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
         command:
           `# 1) Create a KMS key (once, if you don't have one):\n` +
           `gcloud kms keys create ${resource.displayName}-cmek \\\n` +
-          `  --location=us-central1 --keyring=acme --purpose=encryption\n\n` +
+          `  --project=${resource.project} --location=us-central1 --keyring=fleetops-demo --purpose=encryption\n\n` +
           `# 2) Bind the key to the bucket:\n` +
           `gcloud storage buckets update gs://${resource.displayName} \\\n` +
-          `  --default-encryption-key=projects/acme-prod/locations/us-central1/keyRings/acme/cryptoKeys/${resource.displayName}-cmek`,
+          `  --default-encryption-key=projects/${resource.project}/locations/us-central1/keyRings/fleetops-demo/cryptoKeys/${resource.displayName}-cmek`,
         explanation:
           `New objects will be encrypted with the customer-managed key going forward. ` +
           `Existing objects can be re-encrypted with a one-time \`gcloud storage cp\` cycle.`,
@@ -55,6 +55,7 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
       return {
         command:
           `gcloud sql instances patch ${resource.displayName} \\\n` +
+          `  --project=${resource.project} \\\n` +
           `  --tier=db-n1-standard-8 \\\n` +
           `  --async`,
         explanation:
@@ -68,6 +69,7 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
       return {
         command:
           `gcloud sql instances patch ${resource.displayName} \\\n` +
+          `  --project=${resource.project} \\\n` +
           `  --backup-start-time=03:00 \\\n` +
           `  --enable-bin-log \\\n` +
           `  --retained-backups-count=30`,
@@ -83,6 +85,7 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
         command:
           `# Confirm no service depends on this VM, then:\n` +
           `gcloud compute instances stop ${resource.displayName} \\\n` +
+          `  --project=${resource.project} \\\n` +
           `  --zone=${(resource.metadata.zone as string | undefined) ?? "us-central1-a"}\n\n` +
           `# After 14 days of stopped-with-no-issues, delete:\n` +
           `# gcloud compute instances delete ${resource.displayName} --zone=us-central1-a`,
@@ -98,9 +101,9 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
         command:
           `# Investigate first — 0 healthy backends could mean the backend service was decommissioned\n` +
           `# without cleaning up the frontend, OR a real production incident.\n\n` +
-          `gcloud compute forwarding-rules describe ${resource.displayName} --global\n\n` +
+          `gcloud compute forwarding-rules describe ${resource.displayName} --project=${resource.project} --global\n\n` +
           `# If confirmed orphan:\n` +
-          `gcloud compute forwarding-rules delete ${resource.displayName} --global`,
+          `gcloud compute forwarding-rules delete ${resource.displayName} --project=${resource.project} --global`,
         explanation:
           `Human-in-the-loop mandatory here: check the backend-service configuration before deletion. ` +
           `If backends are gone, delete the forwarding rule to stop the $${resource.monthlyCostUsd ?? 0}/mo bleed.`,
@@ -113,6 +116,7 @@ function draftFor(finding: Finding, resource: Resource): { command: string; expl
         command:
           `# Replace open SSH with IAP-tunneled SSH:\n` +
           `gcloud compute firewall-rules update ${resource.displayName} \\\n` +
+          `  --project=${resource.project} \\\n` +
           `  --source-ranges=35.235.240.0/20\n\n` +
           `# 35.235.240.0/20 is the IAP TCP forwarding range. Any real user connects via:\n` +
           `#   gcloud compute ssh <INSTANCE> --tunnel-through-iap`,

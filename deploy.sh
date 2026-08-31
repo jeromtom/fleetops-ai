@@ -23,8 +23,8 @@ gcloud config set project "$PROJECT_ID"
 echo "==> Enabling required APIs (idempotent)"
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
 
-# Mock mode keeps the demo deterministic and key-free. To demo live Gemini
-# policy reasoning instead, set FLEETOPS_MOCK=false and append GOOGLE_AI_API_KEY=your_key
+# This convenience deploy uses the bundled fixture. See SETUP.md for the live
+# Cloud Asset Inventory deployment command and its least-privilege IAM grant.
 ENV_VARS="FLEETOPS_MOCK=true,FLEETOPS_ALLOW_REAL_REMEDIATION=false"
 
 echo "==> Building from Dockerfile and deploying to Cloud Run"

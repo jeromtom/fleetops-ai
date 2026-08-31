@@ -1,10 +1,10 @@
 # FleetOps AI — Submission Status
 
-**Last verified:** 2026-08-30 19:57 UTC
+**Last verified:** 2026-08-31 03:36 UTC
 
 **Hard deadline:** 2026-09-01 00:00 UTC (2026-09-01 05:30 IST)
 
-**Time remaining at this checkpoint:** approximately 28 hours 3 minutes
+**Time remaining at this checkpoint:** approximately 20 hours 24 minutes
 
 **Submission state:** artifacts ready; YouTube upload, Devpost draft, and final human submission remain
 
@@ -19,19 +19,27 @@
   - HTTPS: valid Cloudflare-managed certificate
   - Edge: `fleetops-ai-proxy` Worker, exact hostname route over the existing Rexin wildcard portal route
   - Source and reproducible deployment config: `cloudflare-proxy/`
-- Google Cloud Run origin: <https://fleetops-ai-nbklww7gqa-uc.a.run.app>
-  - Project: `saptaveda-agent`
+- Google Cloud Run origin: <https://fleetops-ai-ywb5cstj7a-uc.a.run.app>
+  - Project: `fleetops-live-demo-2026` (dedicated project owned by `dev.jeromtom@gmail.com`)
   - Region: `us-central1`
   - Service: `fleetops-ai`
-  - Ready revision: `fleetops-ai-00001-7bf`
+  - Ready revision: `fleetops-ai-00001-577`
   - Traffic: 100% to the latest ready revision
-  - Safety: `FLEETOPS_MOCK=true`; `FLEETOPS_ALLOW_REAL_REMEDIATION=false`
+  - Runtime identity: `fleetops-runtime@fleetops-live-demo-2026.iam.gserviceaccount.com`
+  - Safety: `FLEETOPS_MOCK=false`; `FLEETOPS_ALLOW_REAL_REMEDIATION=false`
+- Real sample project: `fleetops-live-demo-2026` (same dedicated project)
+  - Runtime identity has only `roles/cloudasset.viewer` on the target project
+  - Two small GCS buckets: one harmless public object, one empty CMEK test bucket
+  - One open-SSH firewall rule targeting a tag used by no VM
+  - One keyless `staging-deployer` service account with an intentional Editor binding
+  - No demo VM, database, load balancer, credential key, or private data
 - Application verification:
-  - `npm test`: 30/30 passing across 4 files
+  - `npm test`: 32/32 passing across 5 files
   - `npm run build`: clean Next.js production build, 4 routes
-  - Public `POST /api/scan`: 17 resources, 9 findings, 9 remediations
-  - Severity split: 3 critical, 3 high, 3 medium
-  - Project split: acme-prod 8, acme-staging 4, acme-analytics 5
+  - Public `POST /api/scan`: `source=cloud-asset`, 4 resources, 4 findings, 4 remediations
+  - Findings: public bucket, missing CMEK, open SSH, cross-environment Editor
+  - Approval API verified: status `executed`, audit ID recorded, action explicitly `DRY-RUN`
+  - Independent before/after GCP checks verified the bucket IAM and firewall did not change
 - Demo video: `video/fleetops-demo.mp4`
   - Duration: 202.567 seconds (3:22.567; below both the 3:45 target and 4:00 rule)
   - Video: H.264, 1920×1080
@@ -41,10 +49,13 @@
   - Visible action: scan → 9 findings → approve public-bucket fix → deny IAM fix with reason → 22-event fleet state
   - Visible docs: public GitHub repository, rendered architecture diagram, and quick-start instructions
   - Pipeline: `video/build_demo.sh`, `capture_demo.py`, `render_demo.py`, and timed `NARRATION.txt`
+  - **Important:** this recorded video shows the earlier bundled 17-resource mock run. It
+    remains valid as a UI walkthrough but is not proof of the new live sample project.
+    Re-record the scan segment if the submission will claim live Cloud Asset validation.
 
-The first Cloud Build attempt exposed missing permissions on the project's build executor. Two narrow grants were added to
-`901376110809-compute@developer.gserviceaccount.com`: `roles/storage.objectViewer` on only the Cloud Run source bucket and
-`roles/artifactregistry.writer` on only the `cloud-run-source-deploy` repository. No project-wide role was added.
+The production runtime uses a dedicated service account with only
+`roles/cloudasset.viewer`. Cloud Build uses its standard project build identity; the
+runtime has no Editor, Storage Admin, or deployment role.
 
 ## Outstanding human actions
 
@@ -67,11 +78,13 @@ and compliance auditing with human-approved remediation.
 Track: The Fortified Enterprise Fleet — All Things Agentic Hackathon
 Repository: https://github.com/jeromtom/fleetops-ai
 Live app: https://fleetops.rexindynamics.com
-Cloud Run origin: https://fleetops-ai-nbklww7gqa-uc.a.run.app
+Cloud Run origin: https://fleetops-ai-ywb5cstj7a-uc.a.run.app
 
-This continuous demo shows live Google Cloud deployment proof, a full 17-resource
-scan, nine findings, one approved dry-run remediation, one denied remediation with
-an enforced audit reason, and the public architecture documentation.
+This continuous demo shows the Google Cloud deployment, the FleetOps workflow,
+human-approved dry-run remediation, a denied remediation with an enforced audit reason,
+and public architecture documentation. The current public app separately validates a
+real four-resource Cloud Asset Inventory sample; re-record before claiming that live
+sample in the video.
 ```
 
 After processing, open the YouTube link in a logged-out/incognito window and confirm it plays. Paste the URL into

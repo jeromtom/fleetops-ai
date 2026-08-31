@@ -18,7 +18,7 @@ numbered step with the exact text to paste.
 
 | # | Item | State |
 |---|------|-------|
-| 1 | Working 3-agent MVP | ✅ Done — 30/30 tests pass (verified 2026-08-21) |
+| 1 | Working 3-stage MVP | ✅ Done — 32/32 tests pass (verified 2026-08-30) |
 | 2 | Production build | ✅ Done — `npm run build` clean, 4 routes |
 | 3 | Container for Cloud Run | ✅ Done — `Dockerfile` + `deploy.sh`, standalone server verified serving on `$PORT` |
 | 4 | Architecture diagram | ✅ Done — mermaid in `README.md`, renders on GitHub |
@@ -28,8 +28,8 @@ numbered step with the exact text to paste.
 | 8 | Video shot list | ✅ Done — `DEMO_SCRIPT.md` (3:30 script, timestamped), **reality-checked against the running UI 2026-08-21**: every button label, log line, and on-screen number now matches what the app actually renders |
 | 9 | **Devpost registration** | ⬜ **Needs you** — captcha + email OTP |
 | 10 | **Public GitHub repo** | ✅ Done — <https://github.com/jeromtom/fleetops-ai> (`main`) |
-| 11 | **Public deployment** | ✅ Done — <https://fleetops.rexindynamics.com> fronts Cloud Run revision `fleetops-ai-00001-7bf`, Ready and serving 100% of traffic |
-| 12 | **Demo video recorded + on YouTube** | 🟡 File ready — `video/fleetops-demo.mp4` (3:22.567, 1080p, narrated); YouTube upload needs you |
+| 11 | **Public deployment** | ✅ Done — <https://fleetops.rexindynamics.com> fronts dedicated-project revision `fleetops-ai-00001-577`, Ready and serving 100% of traffic |
+| 12 | **Demo video recorded + on YouTube** | 🟡 Earlier mock-mode file exists; re-record the scan segment for live-project proof, then upload to YouTube |
 | 13 | **Click Submit** | ⬜ **Needs you** |
 
 Items 9–13 are the ones that cannot be automated: they need a human identity, a
@@ -60,7 +60,7 @@ cp -r incubator/all-things-agentic /tmp/fleetops-ai
 cd /tmp/fleetops-ai
 rm -rf node_modules .next
 git init && git add -A
-git commit -m "FleetOps AI — 3-agent Google ADK fleet for GCP FinOps, security, and compliance"
+git commit -m "FleetOps AI — live GCP security and compliance workflow"
 gh repo create jeromtom/fleetops-ai --public --source=. --push
 ```
 
@@ -80,15 +80,17 @@ The script enables the required APIs, builds the `Dockerfile`, deploys, and prin
 Deployed: https://fleetops-ai-XXXXX.a.run.app
 ```
 
-**Cloud Run URL → <https://fleetops-ai-nbklww7gqa-uc.a.run.app>**
+**Cloud Run URL → <https://fleetops-ai-ywb5cstj7a-uc.a.run.app>**
 
 **Primary live demo URL → <https://fleetops.rexindynamics.com>**
 
 Sanity-check it before recording:
 
 ```bash
-curl -X POST https://fleetops.rexindynamics.com/api/scan | head -c 300
-# expect: 17 resources → 9 findings → 9 remediations
+curl -sS -X POST https://fleetops.rexindynamics.com/api/scan \
+  -H 'content-type: application/json' -d '{}' | jq \
+  '{source:.state.snapshot.source,resources:(.state.snapshot.resources|length),findings:(.state.findings|length),remediations:(.state.remediations|length)}'
+# expect: source="cloud-asset", resources=4, findings=4, remediations=4
 ```
 
 > Optional but cheap insurance: `docker build -t fleetops-ai . && docker run -p 8080:8080 fleetops-ai`
@@ -104,7 +106,7 @@ Full timestamped script with the exact voiceover lines is in
 | 0:00–0:20 | Title card + problem hook | Frames the value prop |
 | 0:20–0:45 | **Cloud Run dashboard**, service `Serving`, ≥5 continuous seconds | **Mandatory** — this is the "Google Cloud deployment proof" criterion |
 | 0:45–1:15 | Click "Run new scan", scroll the ScannerAgent trace in the Audit Log | Proof of Action — Taskmaster pattern |
-| 1:15–2:00 | 9 findings populate, open the public-bucket finding | Fortified Enterprise Fleet — the submission track |
+| 1:15–2:00 | 4 live-project findings populate, open the public-bucket finding | Fortified Enterprise Fleet — the submission track |
 | 2:00–2:50 | Drafted `gcloud` shown on select → **✓ Approve · Execute** → audit log; then type a reason and **Deny** the IAM finding | Collaborative Partner — human-in-the-loop |
 | 2:50–3:15 | Fleet Overview strip, 4 status cards | Multi-agent coordination |
 | 3:15–3:30 | GitHub repo: architecture diagram + setup | Documentation criterion |
@@ -134,9 +136,9 @@ Devpost → the hackathon page → **Submit project**. Paste these verbatim.
 FleetOps AI
 ```
 
-**Elevator pitch** (197 chars — fits the 200-char cap)
+**Elevator pitch**
 ```
-A 3-agent Google ADK fleet that autonomously audits your Google Cloud org for cost waste, security drift, and compliance violations - and waits for human approval before executing safe remediation.
+A three-stage Cloud Asset workflow that audits real GCP resources for security and compliance drift, drafts project-specific fixes, and requires human approval while keeping execution safely in dry-run.
 ```
 
 **Track**
@@ -158,7 +160,7 @@ https://fleetops.rexindynamics.com
 
 **Built with**
 ```
-next.js, typescript, tailwind, google-adk, gemini, google-cloud-run, cloud-asset-inventory, cloud-logging, cloudflare-workers
+next.js, typescript, tailwind, google-cloud-run, cloud-asset-inventory, cloudflare-workers
 ```
 
 **Long description** — copy the "Long description (paste into Devpost)" block at the

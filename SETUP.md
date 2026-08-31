@@ -1,6 +1,6 @@
 # FleetOps AI — Setup
 
-Everything you need to get FleetOps AI running locally, in mock mode (zero keys), or against live Google Cloud + Gemini.
+Everything you need to run FleetOps AI locally with the bundled fixture or against real Google Cloud Asset Inventory.
 
 ---
 
@@ -8,8 +8,7 @@ Everything you need to get FleetOps AI running locally, in mock mode (zero keys)
 
 - Node.js 20 LTS or newer
 - npm 10+
-- (Optional, for live mode) A Google account for AI Studio + Google Cloud Console
-- (Optional, for live GCP asset scan) A GCP project with the Cloud Asset Inventory API enabled + a service account with `roles/cloudasset.viewer`
+- (Optional, for live mode) A GCP project with Cloud Asset Inventory enabled and an ADC identity with `roles/cloudasset.viewer`
 
 ## Quick start (mock mode — zero keys, offline)
 
@@ -30,27 +29,38 @@ npm test         # runs the full Vitest suite
 
 Expected: **all tests pass** (see `tests/` for coverage).
 
-## Live mode (Gemini + optional live GCP scan)
+## Live Cloud Asset Inventory mode
 
-1. Get a free `GOOGLE_AI_API_KEY` at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey).
-2. Copy `.env.example` → `.env.local` and set:
-   ```
-   FLEETOPS_MOCK=false
-   GOOGLE_AI_API_KEY=your_key_here
-   GEMINI_MODEL=gemini-2.0-flash-exp
-   ```
-3. (Optional — live GCP scan instead of bundled snapshot) create a GCP service account with `roles/cloudasset.viewer` on your org, download the JSON, and:
-   ```
-   GCP_SERVICE_ACCOUNT_JSON_PATH=./gcp-sa.json
-   GCP_ORG_ID=organizations/123456789012
-   ```
-4. `npm run dev` — the ScannerAgent will call the real Cloud Asset Inventory API; PolicyAgent will call real Gemini.
+FleetOps uses Google Application Default Credentials (ADC). For local development:
 
-**RemediationAgent stays in dry-run mode by default.** To let it execute real `gcloud` commands, set:
+```bash
+gcloud auth application-default login
+gcloud services enable cloudasset.googleapis.com --project=YOUR_PROJECT_ID
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="user:YOUR_EMAIL" \
+  --role=roles/cloudasset.viewer
 ```
-FLEETOPS_ALLOW_REAL_REMEDIATION=true
+
+Copy `.env.example` to `.env.local` and set:
+
+```dotenv
+FLEETOPS_MOCK=false
+GCP_PROJECT_IDS=YOUR_PROJECT_ID
+FLEETOPS_RESOURCE_FILTER=fleetops-demo,staging-deployer
+FLEETOPS_ALLOW_REAL_REMEDIATION=false
 ```
-and ensure the runtime service account has `roles/editor` on the target projects. **Do NOT enable this in a hackathon demo** — the judges want to see the agent draft commands and wait for human approval, not silently mutate a production project.
+
+`GCP_PROJECT_IDS` is an explicit comma-separated allowlist. The optional resource
+filter is also comma-separated and is useful when the fixture shares a sandbox with
+unrelated resources. Start the app with `npm run dev`, call `POST /api/scan`, and verify
+that `state.snapshot.source` is `cloud-asset`.
+
+To reproduce the four-resource sample used by the public deployment, see
+[`demo-project/README.md`](./demo-project/README.md). The setup creates no compute
+workload and no service-account key.
+
+**Remediation is dry-run only. Keep `FLEETOPS_ALLOW_REAL_REMEDIATION=false`.** An
+approved item records the proposed command and audit event but never invokes `gcloud`.
 
 ## Deploy to Google Cloud Run (needed for hackathon submission proof)
 
@@ -76,13 +86,23 @@ burning a Cloud Build run):
 ```bash
 docker build -t fleetops-ai .
 docker run -p 8080:8080 fleetops-ai
-curl -X POST http://localhost:8080/api/scan   # expect 17 resources → 9 findings → 9 remediations
+curl -X POST http://localhost:8080/api/scan   # default mock: 17 resources → 9 findings → 9 drafts
 ```
 
 The image defaults to `FLEETOPS_MOCK=true` and `FLEETOPS_ALLOW_REAL_REMEDIATION=false`,
-so a fresh deploy demos the full 3-agent pipeline with **zero API keys** and cannot
-mutate any real GCP resource. To demo live Gemini policy reasoning, redeploy with
-`FLEETOPS_MOCK=false` and `GOOGLE_AI_API_KEY=...` in the `--set-env-vars` list.
+so a fresh deploy works with zero credentials and cannot mutate a real resource.
+
+For live inventory on Cloud Run, grant its runtime service account
+`roles/cloudasset.viewer` on the target sandbox, then deploy with an explicit allowlist:
+
+```bash
+gcloud run deploy fleetops-ai \
+  --source . \
+  --project=YOUR_DEPLOY_PROJECT \
+  --region=us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars='^@^FLEETOPS_MOCK=false@FLEETOPS_ALLOW_REAL_REMEDIATION=false@GCP_PROJECT_IDS=YOUR_TARGET_PROJECT@FLEETOPS_RESOURCE_FILTER=fleetops-demo,staging-deployer'
+```
 
 ---
 
@@ -101,7 +121,7 @@ Details you'll need across all steps:
   Role:            Software Developer / AI Agent Builder
   Team size:       Solo
   Project name:    FleetOps AI
-  Project tagline: 3-agent Google ADK fleet that autonomously audits GCP for cost + security + compliance
+  Project tagline: Live GCP security and compliance workflow with human-approved dry-run remediation
   Track choice:    The Fortified Enterprise Fleet
   Repo URL (fill in after promotion):  https://github.com/jeromtom/fleetops-ai
   Deployment URL (fill in after Cloud Run deploy):  https://fleetops-ai-XXXXX.a.run.app
@@ -123,11 +143,9 @@ STEP 2 — Claim $150 free GCP credits
      account sign-in / consent prompt.
   4. Screenshot the credit-claim confirmation.
 
-STEP 3 — Get a Gemini API key
-  1. Open https://aistudio.google.com/app/apikey
-  2. Click "Create API key" → "Create API key in new project".
-  3. Copy the key. Paste it into a scratch note titled "GOOGLE_AI_API_KEY".
-  4. Do NOT commit it to GitHub.
+STEP 3 — Confirm no model key is required
+  The current implementation uses live Cloud Asset Inventory plus a deterministic,
+  version-controlled policy catalogue. Do not add or claim a Gemini key.
 
 STEP 4 — (Optional) Enable Cloud Asset Inventory API on a demo GCP project
   1. Open https://console.cloud.google.com/
@@ -145,14 +163,14 @@ STEP 6 — Draft the Devpost submission (DO NOT SUBMIT)
   1. Open https://allthingsagentichackathon.devpost.com/ → click "Submit project".
   2. Fill in:
        - Project name: FleetOps AI
-       - Elevator pitch (200 chars): "A 3-agent Google ADK fleet that autonomously audits your
-         Google Cloud org for cost waste, security drift, and compliance violations — and
-         waits for human approval before executing safe remediation."
+       - Elevator pitch: "A three-stage Cloud Asset workflow that audits real GCP resources,
+         drafts project-specific fixes, and requires human approval while execution remains
+         safely in dry-run."
        - Track: The Fortified Enterprise Fleet
        - Repo URL: https://github.com/jeromtom/fleetops-ai
        - Video URL: paste the ≤4-min YouTube link from DEMO_SCRIPT.md
        - Long description: copy from DEMO_SCRIPT.md "Long description" section
-       - Built with: Next.js, TypeScript, Tailwind, Google ADK, Gemini 2.0 Flash, Google Cloud Run
+       - Built with: Next.js, TypeScript, Tailwind, Google Cloud Run, Cloud Asset Inventory
        - Country: India
   3. Save as DRAFT. STOP HERE. Do NOT click "Submit for judging". Ping Jerom to review
      every field and submit himself.
@@ -164,9 +182,8 @@ STEP 6 — Draft the Devpost submission (DO NOT SUBMIT)
 
 | Var | Default | Purpose |
 |-----|---------|---------|
-| `FLEETOPS_MOCK` | `true` | If true, all agents use bundled snapshot + deterministic responses (no keys needed) |
-| `GOOGLE_AI_API_KEY` | — | Gemini API key (live mode only) |
-| `GEMINI_MODEL` | `gemini-2.0-flash-exp` | Which Gemini model PolicyAgent + RemediationAgent call |
-| `GCP_SERVICE_ACCOUNT_JSON_PATH` | — | Path to GCP service-account JSON (live scanner only) |
-| `GCP_ORG_ID` | — | GCP org resource name for real scanner (live scanner only) |
-| `FLEETOPS_ALLOW_REAL_REMEDIATION` | `false` | Master safety switch for real `gcloud` writes — LEAVE OFF FOR DEMO |
+| `FLEETOPS_MOCK` | `true` | If true, ScannerAgent uses the bundled snapshot; if false, it calls Cloud Asset Inventory |
+| `GCP_PROJECT_IDS` | — | Required live-mode comma-separated project allowlist |
+| `FLEETOPS_RESOURCE_FILTER` | — | Optional comma-separated asset-name fragments |
+| `GOOGLE_APPLICATION_CREDENTIALS` | ADC default | Optional standard Google path to a local service-account JSON file |
+| `FLEETOPS_ALLOW_REAL_REMEDIATION` | `false` | Must remain false; approvals are audit-logged dry runs |

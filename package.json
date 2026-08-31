@@ -2,7 +2,7 @@
   "name": "fleetops-ai",
   "version": "0.1.0",
   "private": true,
-  "description": "3-agent Google ADK fleet: FinOps + Security + Compliance auditor for Google Cloud (All Things Agentic Hackathon 2026)",
+  "description": "Cloud Asset Inventory-driven FinOps, security, and compliance workflow for Google Cloud",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +12,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "next": "14.2.5",
+    "@google-cloud/asset": "6.3.3",
+    "next": "14.2.35",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
